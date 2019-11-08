@@ -1,0 +1,1 @@
+export DEVISE_JWT_SECRET_KEY=asd
