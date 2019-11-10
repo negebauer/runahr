@@ -2,12 +2,17 @@
 
 # UsersController
 class UsersController < ApplicationController
+  before_action :authenticate_user, except: [:create]
+
   def create
     @user = User.new(user_params)
     @user.email.downcase!
 
     @user.save!
-    render json: @user, except: [:password_digest]
+  end
+
+  def current
+    @user = current_user
   end
 
   private
