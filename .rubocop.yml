@@ -6,9 +6,4 @@ Style/NumericLiterals:
     - db/schema.rb
 
 Style/Documentation:
-  Exclude:
-    - db/migrate/*.rb
-    - test/test_helper.rb
-    - app/mailers/application_mailer.rb
-    - app/models/application_record.rb
-    - config/application.rb
+  Enabled: false
