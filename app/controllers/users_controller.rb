@@ -3,10 +3,7 @@
 # UsersController
 class UsersController < ApplicationController
   def create
-    puts 'HOLA'
-    puts user_params
     @user = User.new(user_params)
-    puts @user
     @user.email.downcase!
 
     @user.save!
@@ -16,7 +13,6 @@ class UsersController < ApplicationController
   private
 
   def user_params
-    puts params
     params.permit(:name, :email, :password)
   end
 end
