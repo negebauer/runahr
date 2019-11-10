@@ -5,5 +5,5 @@ Rails.application.routes.draw do
   root to: 'application#root'
 
   post 'users' => 'users#create'
-  post 'user_token' => 'user_token#create'
+  post 'login' => 'user_token#create'
 end
