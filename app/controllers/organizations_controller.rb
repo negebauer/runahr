@@ -18,7 +18,10 @@ class OrganizationsController < ApplicationController
   end
 
   def add_user
-    @organization_user = @organization.add_user(params[:user_id], params[:role])
+    user_id = params[:user_id].to_i
+    return render json: { message: 'Cant change your own role' }, status: :forbidden if current_user.id == user_id
+
+    @organization_user = @organization.add_user(user_id, params[:role])
     @organization_user.save!
   end
 
