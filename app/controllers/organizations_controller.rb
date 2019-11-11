@@ -13,6 +13,10 @@ class OrganizationsController < ApplicationController
     render status: :created
   end
 
+  def users
+    @users = @organization.users
+  end
+
   def add_user
     @organization_user = @organization.add_user(params[:user_id], params[:role])
     @organization_user.save!
