@@ -16,6 +16,7 @@ class UsersController < ApplicationController
   end
 
   def organizations
+    @user = current_user
     @organizations = current_user.organizations
   end
 
