@@ -8,7 +8,7 @@ class UsersController < ApplicationController
   load_and_authorize_resource
 
   def create
-    @user.email.downcase!
+    @user.email&.downcase!
     @user.save!
   end
 
