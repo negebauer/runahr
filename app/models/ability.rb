@@ -8,9 +8,15 @@ class Ability
 
     return unless user.present?
 
+    # Signed in user permissions
     can :me, User
     can :read, Organization, id: user.organizations.pluck(:id)
     can :create, Organization
+
+    # Organization employee permissions
+
+    # Organization admin permissions
+    can :add_user, Organization, organization_users: { user_id: user.id, role: :admin }
 
     # Define abilities for the passed in user here. For example:
     #
