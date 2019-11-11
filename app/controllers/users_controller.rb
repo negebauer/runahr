@@ -4,14 +4,14 @@
 class UsersController < ApplicationController
   before_action :authenticate_user, except: [:create]
 
-  def create
-    @user = User.new(user_params)
-    @user.email.downcase!
+  load_and_authorize_resource
 
+  def create
+    @user.email.downcase!
     @user.save!
   end
 
-  def current
+  def me
     @user = current_user
   end
 

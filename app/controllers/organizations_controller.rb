@@ -2,32 +2,20 @@
 
 # OrganizationsController
 class OrganizationsController < ApplicationController
-  before_action :set_organization, only: %i[show update]
+  before_action :authenticate_user
 
-  # GET /organizations
-  # GET /organizations.json
+  load_and_authorize_resource
+
   def index
     @organizations = Organization.all
   end
 
-  # GET /organizations/1
-  # GET /organizations/1.json
   def show; end
 
-  # POST /organizations
-  # POST /organizations.json
   def create
-    @organization = Organization.new(organization_params)
-
-    if @organization.save
-      render :show, status: :created, location: @organization
-    else
-      render json: @organization.errors, status: :unprocessable_entity
-    end
+    @organization.save!
   end
 
-  # PATCH/PUT /organizations/1
-  # PATCH/PUT /organizations/1.json
   def update
     if @organization.update(organization_params)
       render :show, status: :ok, location: @organization
@@ -38,11 +26,7 @@ class OrganizationsController < ApplicationController
 
   private
 
-  def set_organization
-    @organization = Organization.find(params[:id])
-  end
-
   def organization_params
-    params.fetch(:organization, {})
+    params.require(:organization).permit(:name)
   end
 end

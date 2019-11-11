@@ -3,7 +3,10 @@ inherit_from: .rubocop_todo.yml
 Style/NumericLiterals:
   Exclude:
     - db/migrate/*.rb
-    - db/schema.rb
 
 Style/Documentation:
   Enabled: false
+
+AllCops:
+  Exclude:
+    - db/schema.rb
