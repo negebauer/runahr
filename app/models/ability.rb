@@ -3,12 +3,14 @@
 class Ability
   include CanCan::Ability
 
-  def initialize(_user)
+  def initialize(user)
     can :create, User
-    can :me, User
-    can :organizations, User
 
-    can :create, Organization
+    if user.present?
+      can :me, User
+      can :read, Organization, id: user.organizations.pluck(:id)
+      can :create, Organization
+    end
 
     # Define abilities for the passed in user here. For example:
     #
