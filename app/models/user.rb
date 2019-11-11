@@ -8,13 +8,9 @@ class User < ApplicationRecord
   validates :email, presence: true, uniqueness: true
   validates :password_digest, presence: true
 
-  enum role: { employee: 0, admin: 1 }
+  enum role: %i[org_employee org_admin]
 
-  after_initialize :set_defaults
-
-  private
-
-  def set_defaults
-    self.role ||= :employee if new_record?
+  before_create do
+    self.role ||= :org_employee if new_record?
   end
 end

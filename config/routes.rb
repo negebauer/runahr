@@ -5,7 +5,7 @@ Rails.application.routes.draw do
   root to: 'application#root'
 
   resources :organizations, only: %i[index show create update]
-  get 'users/current' => 'users#current'
+  get 'users/me' => 'users#me'
   post 'users' => 'users#create'
   post 'login' => 'user_token#create'
 end
