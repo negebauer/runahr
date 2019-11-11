@@ -14,11 +14,7 @@ class OrganizationsController < ApplicationController
   end
 
   def add_user
-    user_id = params[:user_id]
-    role = params[:role] || :employee
-    @organization_user = @organization.organization_users.find_by(user_id: user_id)
-    @organization_user ||= @organization.organization_users.new(user_id: user_id)
-    @organization_user.role = role
+    @organization_user = @organization.add_user(params[:user_id], params[:role])
     @organization_user.save!
   end
 
