@@ -6,11 +6,11 @@ class Ability
   def initialize(user)
     can :create, User
 
-    if user.present?
-      can :me, User
-      can :read, Organization, id: user.organizations.pluck(:id)
-      can :create, Organization
-    end
+    return unless user.present?
+
+    can :me, User
+    can :read, Organization, id: user.organizations.pluck(:id)
+    can :create, Organization
 
     # Define abilities for the passed in user here. For example:
     #

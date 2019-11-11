@@ -2,6 +2,7 @@
 
 # Root application
 class ApplicationController < ActionController::API
+  include ExceptionHandler
   include Knock::Authenticable
 
   private
