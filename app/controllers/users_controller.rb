@@ -3,16 +3,13 @@
 # UsersController
 class UsersController < ApplicationController
   before_action :authenticate_user, except: [:create]
+  before_action :set_current_user_as_user, only: [:me]
 
   load_and_authorize_resource
 
   def create
-    @user.email.downcase!
+    @user.email&.downcase!
     @user.save!
-  end
-
-  def me
-    @user = current_user
   end
 
   private

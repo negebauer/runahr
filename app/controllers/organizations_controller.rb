@@ -3,16 +3,12 @@
 # OrganizationsController
 class OrganizationsController < ApplicationController
   before_action :authenticate_user
+  before_action :set_current_user_as_user, only: %i[index show]
 
   load_and_authorize_resource
 
-  def index
-    @organizations = Organization.all
-  end
-
-  def show; end
-
   def create
+    @organization.organization_users.build(user: current_user, role: :admin)
     @organization.save!
   end
 
