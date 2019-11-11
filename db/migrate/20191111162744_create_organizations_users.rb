@@ -2,9 +2,9 @@
 
 class CreateOrganizationsUsers < ActiveRecord::Migration[5.2]
   def change
-    create_join_table :organizations, :users do |t|
-      t.index :organization_id
-      t.index :user_id
+    create_table :organization_users, id: false do |t|
+      t.belongs_to :user, index: true
+      t.belongs_to :organization, index: true
     end
   end
 end
