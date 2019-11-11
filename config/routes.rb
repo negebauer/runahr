@@ -5,9 +5,11 @@ Rails.application.routes.draw do
   root to: 'application#root'
 
   resources :organizations, only: %i[index show create] do
-      get 'users' => 'organizations#users'
-      post 'users' => 'organizations#add_user'
+    get 'users' => 'organizations#users'
+    post 'users' => 'organizations#add_user'
 
+    get 'attendances/:user_id' => 'organizations#user_attendances'
+    post 'attendances' => 'organizations#create_attendance'
   end
 
   get 'users/me' => 'users#me'
