@@ -10,14 +10,12 @@ class OrganizationsController < ApplicationController
   def create
     @organization.organization_users.build(user: current_user, role: :admin)
     @organization.save!
+    render status: :created
   end
 
-  def update
-    if @organization.update(organization_params)
-      render :show, status: :ok, location: @organization
-    else
-      render json: @organization.errors, status: :unprocessable_entity
-    end
+  def add_user
+    @organization_user = @organization.add_user(params[:user_id], params[:role])
+    @organization_user.save!
   end
 
   private
