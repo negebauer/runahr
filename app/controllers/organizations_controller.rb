@@ -14,6 +14,8 @@ class OrganizationsController < ApplicationController
 
   def create
     @organization.save!
+    @organization.organization_users.create(user: current_user, role: :admin)
+    @organization.save!
   end
 
   def update
