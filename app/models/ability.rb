@@ -6,6 +6,8 @@ class Ability
   def initialize(_user)
     can :create, User
     can :me, User
+    can :organizations, User
+
     can :create, Organization
 
     # Define abilities for the passed in user here. For example:

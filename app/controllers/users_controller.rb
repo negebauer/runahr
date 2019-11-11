@@ -15,6 +15,10 @@ class UsersController < ApplicationController
     @user = current_user
   end
 
+  def organizations
+    @organizations = current_user.organizations
+  end
+
   private
 
   def user_params

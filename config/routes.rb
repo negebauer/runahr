@@ -6,6 +6,7 @@ Rails.application.routes.draw do
 
   resources :organizations, only: %i[index show create update]
   get 'users/me' => 'users#me'
+  get 'users/me/organizations' => 'users#organizations'
   post 'users' => 'users#create'
   post 'login' => 'user_token#create'
 end
