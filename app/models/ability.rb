@@ -14,10 +14,9 @@ class Ability
     can :create, Organization
 
     # Organization employee permissions
-    can :users, Organization, organization_users: { user_id: user.id, role: %i[employee admin] }
 
     # Organization admin permissions
-    can :add_user, Organization, organization_users: { user_id: user.id, role: :admin }
+    can :manage, Organization, organization_users: { user_id: user.id, role: :admin }
 
     # Define abilities for the passed in user here. For example:
     #
