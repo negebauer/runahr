@@ -10,7 +10,7 @@ class OrganizationUser < ApplicationRecord
 
   enum role: %i[employee admin]
 
-  before_create do
-    self.role ||= :employee if new_record?
+  before_validation do
+    self.role ||= :employee
   end
 end

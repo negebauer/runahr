@@ -9,7 +9,7 @@ class Organization < ApplicationRecord
   def add_user(user_id, role)
     organization_user = organization_users.find_by(user_id: user_id)
     organization_user ||= organization_users.new(user_id: user_id)
-    organization_user.role = role || :employee
+    organization_user.role = role
     organization_user
   end
 end
