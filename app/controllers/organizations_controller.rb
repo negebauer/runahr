@@ -12,14 +12,6 @@ class OrganizationsController < ApplicationController
     @organization.save!
   end
 
-  def update
-    if @organization.update(organization_params)
-      render :show, status: :ok, location: @organization
-    else
-      render json: @organization.errors, status: :unprocessable_entity
-    end
-  end
-
   private
 
   def organization_params
