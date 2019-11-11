@@ -10,6 +10,16 @@ class OrganizationsController < ApplicationController
   def create
     @organization.organization_users.build(user: current_user, role: :admin)
     @organization.save!
+    render status: :created
+  end
+
+  def add_user
+    user_id = params[:user_id]
+    role = params[:role] || :employee
+    @organization_user = @organization.organization_users.find_by(user_id: user_id)
+    @organization_user ||= @organization.organization_users.new(user_id: user_id)
+    @organization_user.role = role
+    @organization_user.save!
   end
 
   private
