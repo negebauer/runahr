@@ -13,7 +13,7 @@ Rails.application.routes.draw do
     post 'attendances/check_out' => 'organizations#check_out'
     # admin attendance
     get 'attendances/:user_id' => 'organizations#user_attendances'
-    post 'attendances' => 'organizations#create_attendance'
+    post 'attendances/:user_id' => 'organizations#create_attendance'
   end
 
   get 'users/me' => 'users#me'
