@@ -8,6 +8,10 @@ Rails.application.routes.draw do
     get 'users' => 'organizations#users'
     post 'users' => 'organizations#add_user'
 
+    # employee attendance
+    post 'attendances/check_in' => 'organizations#check_in'
+    post 'attendances/check_out' => 'organizations#check_out'
+    # admin attendance
     get 'attendances/:user_id' => 'organizations#user_attendances'
     post 'attendances' => 'organizations#create_attendance'
   end

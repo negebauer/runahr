@@ -3,7 +3,7 @@
 # OrganizationsController
 class OrganizationsController < ApplicationController
   before_action :authenticate_user
-  before_action :set_current_user_as_user, only: %i[index show]
+  before_action :set_current_user_as_user, only: %i[index show check_in check_out]
 
   load_and_authorize_resource id_param: 'organization_id', except: :show
   load_and_authorize_resource only: :show
@@ -24,6 +24,18 @@ class OrganizationsController < ApplicationController
 
     @organization_user = @organization.add_user(user_id, params[:role])
     @organization_user.save!
+  end
+
+  def check_in
+    @user.check_in(@organization.id)
+    head :ok
+  end
+
+  def check_out
+    @attendance = @user.check_out(@organization.id)
+    render json: @attendance
+  rescue Exceptions::UserHasNoCheckInToCheckOut
+    render json: { message: 'User does not have a check in with a pending check out' }, status: :unprocessable_entity
   end
 
   private
