@@ -1,3 +1,3 @@
 # frozen_string_literal: true
 
-json.partial! 'organizations/attendance', attendance: @attendance
+json.partial! 'attendance', attendance: @attendance
