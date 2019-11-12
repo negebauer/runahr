@@ -4,6 +4,7 @@
 class OrganizationsController < ApplicationController
   before_action :authenticate_user
   before_action :set_current_user_as_user, only: %i[index show check_in check_out]
+  before_action :load_user_from_params, only: %i[user_check_in user_check_out]
 
   load_and_authorize_resource id_param: 'organization_id', only: %i[check_in check_out user_check_in user_check_out]
   load_and_authorize_resource only: %i[users add_user show create]
@@ -27,21 +28,19 @@ class OrganizationsController < ApplicationController
   end
 
   def check_in
-    user_perform_check_in
+    perform_check_in
   end
 
   def check_out
-    user_perform_check_out
+    perform_check_out
   end
 
   def user_check_in
-    load_user_from_params
-    user_perform_check_in
+    perform_check_in
   end
 
   def user_check_out
-    load_user_from_params
-    user_perform_check_out
+    perform_check_out
   end
 
   private
@@ -54,7 +53,7 @@ class OrganizationsController < ApplicationController
     @user = User.find(params[:user_id])
   end
 
-  def user_perform_check_in
+  def perform_check_in
     @attendance = @user.check_in(@organization.id)
   rescue Exceptions::UserHasPendingCheckOut => e
     render json: {
@@ -63,7 +62,7 @@ class OrganizationsController < ApplicationController
     }, status: :unprocessable_entity
   end
 
-  def user_perform_check_out
+  def perform_check_out
     @attendance = @user.check_out(@organization.id)
   rescue Exceptions::UserHasNoCheckInToCheckOut
     render json: { message: 'User does not have a check in with a pending check out' }, status: :unprocessable_entity
