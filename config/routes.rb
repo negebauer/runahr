@@ -10,6 +10,9 @@ Rails.application.routes.draw do
       post 'users' => 'organizations#add_user'
     end
 
+    resources :attendances, only: %i[index]
+    get 'attendances/me' => 'attendances#me'
+
     # employee attendance
     post 'attendances/check_in' => 'organizations#check_in'
     post 'attendances/check_out' => 'organizations#check_out'

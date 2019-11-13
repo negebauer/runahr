@@ -6,7 +6,8 @@ class OrganizationsController < ApplicationController
   before_action :set_current_user_as_user, only: %i[index show check_in check_out]
   before_action :load_user_from_params, only: %i[user_attendances user_check_in user_check_out]
 
-  load_and_authorize_resource id_param: 'organization_id', only: %i[user_attendances check_in check_out user_check_in user_check_out]
+  load_and_authorize_resource id_param: 'organization_id',
+                              only: %i[attendances user_attendances check_in check_out user_check_in user_check_out]
   load_and_authorize_resource only: %i[users add_user index show create]
 
   def create
@@ -33,6 +34,10 @@ class OrganizationsController < ApplicationController
 
   def check_out
     perform_check_out
+  end
+
+  def attendances
+    @attendances = @organization.attendances
   end
 
   def user_attendances
