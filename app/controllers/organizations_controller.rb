@@ -7,7 +7,7 @@ class OrganizationsController < ApplicationController
   before_action :load_user_from_params, only: %i[user_check_in user_check_out]
 
   load_and_authorize_resource id_param: 'organization_id', only: %i[check_in check_out user_check_in user_check_out]
-  load_and_authorize_resource only: %i[users add_user show create]
+  load_and_authorize_resource only: %i[users add_user index show create]
 
   def create
     @organization.organization_users.build(user: current_user, role: :admin)
