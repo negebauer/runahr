@@ -9,13 +9,7 @@ class AttendancesController < ApplicationController
   load_and_authorize_resource :attendance, trough: :organization, only: %i[index me]
 
   def index
-    return if @attendances.empty?
-
-    @user_attendances = @attendances.group_by(&:user_id).map do |user_id, attendances|
-      {
-        user: User.find_by(id: user_id),
-        attendances: attendances
-      }
-    end
+    user_ids = @attendances.pluck(:user_id).uniq
+    @users = User.where(id: user_ids).select(:id, :name).index_by(&:id)
   end
 end
