@@ -16,10 +16,16 @@ class AttendancesController < ApplicationController
 
   def create
     @attendance.save!
+    render status: :created
   end
 
   def update
     @attendance.update(attendance_params)
+  end
+
+  def destroy
+    @attendance.destroy!
+    head :no_content
   end
 
   private
