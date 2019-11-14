@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
 json.array! @attendances do |attendance|
-  json.partial! 'attendance', attendance: attendance, user_name: @users[attendance.user_id].name
+  json.partial! 'attendance', attendance: attendance, user: @users[attendance.user_id]
 end
