@@ -6,13 +6,14 @@ Rails.application.routes.draw do
 
   resources :organizations, only: %i[index show create] do
     resources :organization_users, path: 'users'
+
     resources :attendances
+    post 'attendances/check_in' => 'attendances#check_in'
+    post 'attendances/check_out' => 'attendances#check_out'
 
     get 'attendances/me' => 'attendances#me'
 
     # employee attendance
-    post 'attendances/check_in' => 'organizations#check_in'
-    post 'attendances/check_out' => 'organizations#check_out'
     # admin attendance
     get 'attendances/:user_id' => 'organizations#user_attendances'
     post 'attendances/:user_id/check_in' => 'organizations#user_check_in'

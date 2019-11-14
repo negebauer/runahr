@@ -44,14 +44,6 @@ class OrganizationsController < ApplicationController
     @attendances = @user.attendances.where(organization_id: @organization.id)
   end
 
-  def user_check_in
-    perform_check_in
-  end
-
-  def user_check_out
-    perform_check_out
-  end
-
   private
 
   def organization_params
@@ -60,20 +52,5 @@ class OrganizationsController < ApplicationController
 
   def load_user_from_params
     @user = User.find(params[:user_id])
-  end
-
-  def perform_check_in
-    @attendance = @user.check_in(@organization.id)
-  rescue Exceptions::UserHasPendingCheckOut => e
-    render json: {
-      message: 'User has a pending check out',
-      attendance: { id: e.attendance.id, check_in_at: e.attendance.check_in_at }
-    }, status: :unprocessable_entity
-  end
-
-  def perform_check_out
-    @attendance = @user.check_out(@organization.id)
-  rescue Exceptions::UserHasNoCheckInToCheckOut
-    render json: { message: 'User does not have a check in with a pending check out' }, status: :unprocessable_entity
   end
 end
