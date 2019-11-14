@@ -9,6 +9,8 @@ class AttendancesController < ApplicationController
   load_and_authorize_resource :attendance, trough: :organization, only: %i[index me]
 
   def index
+    return if @attendances.empty?
+
     @user_attendances = @attendances.group_by(&:user_id).map do |user_id, attendances|
       {
         user: User.find_by(id: user_id),
