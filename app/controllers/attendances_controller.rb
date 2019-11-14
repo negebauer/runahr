@@ -14,6 +14,10 @@ class AttendancesController < ApplicationController
     @users = User.where(id: user_ids).select(:id, :name).index_by(&:id)
   end
 
+  def create
+    @attendance.save!
+  end
+
   def update
     @attendance.update(attendance_params)
   end
