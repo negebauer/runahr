@@ -3,7 +3,7 @@
 class Ability
   include CanCan::Ability
 
-  def initialize(user, organization = nil) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def initialize(user, organization = nil) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity
     can :create, User
 
     return unless user.present?
@@ -14,17 +14,19 @@ class Ability
     can :create, Organization
 
     return unless organization.present?
-    return unless organization.organization_users.find_by(user_id: user.id, role: %i[employee admin])
+
+    organization_user = organization.organization_users.find_by(user_id: user.id)
+    return unless organization_user.present?
+    return unless organization_user.admin? || organization_user.employee?
 
     # Organization employee permissions
     can :me, Attendance, user_id: user.id
-    can :check_in, Organization, organization_users: { user_id: user.id, role: %i[admin employee] }
-    can :check_out, Organization, organization_users: { user_id: user.id, role: %i[admin employee] }
+    can %i[check_in check_out], Organization, id: organization.id
 
-    return unless organization.organization_users.find_by(user_id: user.id, role: :admin)
+    return unless organization_user.admin?
 
     # Organization admin permissions
-    can :manage, Attendance, organization: { organization_users: { user_id: user.id, role: OrganizationUser.roles[:admin] } }
-    can :manage, Organization, organization_users: { user_id: user.id, role: :admin }
+    can :manage, Attendance, organization_id: organization.id
+    can :manage, Organization, id: organization.id
   end
 end
