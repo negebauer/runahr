@@ -11,7 +11,8 @@ class OrganizationUsersController < ApplicationController
                               trough: :organization,
                               only: %i[index show update destroy]
 
-  before_action :dont_allow_self_edit, only: %i[create update destroy]
+  before_action :dont_allow_self_edit, only: %i[create update]
+  before_action :dont_allow_self_destroy, only: %i[destroy]
 
   def index
     user_ids = @organization_users.pluck(:user_id).uniq
@@ -45,8 +46,13 @@ class OrganizationUsersController < ApplicationController
 
   def dont_allow_self_edit
     user_id = organization_user_params[:user_id].to_i
-    email = organization_user_params[:email]
+    email = organization_user_params[:user_email]
     is_editing_self = current_user.id == user_id || current_user.email == email
     render json: { message: 'Cant modify your own role' }, status: :forbidden if is_editing_self
+  end
+
+  def dont_allow_self_destroy
+    user_id = params[:user_id].to_i
+    render json: { message: 'Cant modify your own role' }, status: :forbidden if current_user.id == user_id
   end
 end
