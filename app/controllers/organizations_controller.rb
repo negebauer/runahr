@@ -3,14 +3,19 @@
 # OrganizationsController
 class OrganizationsController < ApplicationController
   before_action :authenticate_user
-  before_action :set_current_user_as_user, only: %i[index show]
+  before_action :set_current_user_as_user, only: %i[index show update]
+  before_action :load_user_from_params, only: %i[user_attendances user_check_in user_check_out]
 
-  load_and_authorize_resource
+  load_and_authorize_resource only: %i[users add_user index show create update]
 
   def create
     @organization.organization_users.build(user: current_user, role: :admin)
     @organization.save!
     render status: :created
+  end
+
+  def update
+    @organization.update(organization_params)
   end
 
   def users
@@ -29,5 +34,9 @@ class OrganizationsController < ApplicationController
 
   def organization_params
     params.require(:organization).permit(:name)
+  end
+
+  def load_user_from_params
+    @user = User.find(params[:user_id])
   end
 end

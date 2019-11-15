@@ -16,9 +16,5 @@ module ExceptionHandler
     rescue_from ActiveRecord::RecordInvalid do |error|
       render json: { error: error.message }, status: :unprocessable_entity
     end
-
-    rescue_from JWT::ExpiredSignature do
-      render json: { message: 'Your token expired' }, status: :unauthorized
-    end
   end
 end

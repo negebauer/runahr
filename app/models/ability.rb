@@ -3,7 +3,7 @@
 class Ability
   include CanCan::Ability
 
-  def initialize(user)
+  def initialize(user, organization = nil) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity
     can :create, User
 
     return unless user.present?
@@ -13,36 +13,20 @@ class Ability
     can :read, Organization, id: user.organizations.pluck(:id)
     can :create, Organization
 
+    return unless organization.present?
+
+    organization_user = organization.organization_users.find_by(user_id: user.id)
+    return unless organization_user.present?
+    return unless organization_user.admin? || organization_user.employee?
+
     # Organization employee permissions
+    can :me, Attendance
+    can %i[check_in check_out], Attendance, organization_id: organization.id
+
+    return unless organization_user.admin?
 
     # Organization admin permissions
-    can :manage, Organization, organization_users: { user_id: user.id, role: :admin }
-
-    # Define abilities for the passed in user here. For example:
-    #
-    #   user ||= User.new # guest user (not logged in)
-    #   if user.admin?
-    #     can :manage, :all
-    #   else
-    #     can :read, :all
-    #   end
-    #
-    # The first argument to `can` is the action you are giving the user
-    # permission to do.
-    # If you pass :manage it will apply to every action. Other common actions
-    # here are :read, :create, :update and :destroy.
-    #
-    # The second argument is the resource the user can perform the action on.
-    # If you pass :all it will apply to every resource. Otherwise pass a Ruby
-    # class of the resource.
-    #
-    # The third argument is an optional hash of conditions to further filter the
-    # objects.
-    # For example, here the user can only update published articles.
-    #
-    #   can :update, Article, :published => true
-    #
-    # See the wiki for details:
-    # https://github.com/CanCanCommunity/cancancan/wiki/Defining-Abilities
+    can :manage, Attendance, organization_id: organization.id
+    can :manage, Organization, id: organization.id
   end
 end

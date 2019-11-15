@@ -4,11 +4,18 @@ Rails.application.routes.draw do
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
   root to: 'application#root'
 
-  resources :organizations, only: %i[index show create] do
-    member do
-      get 'users' => 'organizations#users'
-      post 'users' => 'organizations#add_user'
+  resources :organizations, only: %i[index show create update] do
+    resources :organization_users, path: 'users' do
+      get 'attendances' => 'attendances#user_attendances'
+      post 'attendances/check_in' => 'attendances#user_check_in'
+      post 'attendances/check_out' => 'attendances#user_check_out'
     end
+
+    get 'attendances/me'
+    post 'attendances/check_in'
+    post 'attendances/check_out'
+
+    resources :attendances
   end
 
   get 'users/me' => 'users#me'
