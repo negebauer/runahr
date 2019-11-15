@@ -6,8 +6,12 @@ class OrganizationUsersController < ApplicationController
 
   load_and_authorize_resource :organization, id_param: 'organization_id'
   load_and_authorize_resource :organization_user,
+                              find_by: :user_id,
+                              id_param: 'user_id',
                               trough: :organization,
-                              only: %i[index show create update destroy]
+                              only: %i[index show update destroy]
+
+  before_action :dont_allow_self_edit, only: %i[create update destroy]
 
   def index
     user_ids = @organization_users.pluck(:user_id).uniq
@@ -15,6 +19,32 @@ class OrganizationUsersController < ApplicationController
   end
 
   def create
-    # todo
+    user_id = params[:user_id].to_i
+    return render json: { message: 'Cant change your own role' }, status: :forbidden if current_user.id == user_id
+
+    @organization_user = @organization.add_user(user_id, params[:role])
+    @organization_user.save!
+  end
+
+  def update
+    @organization_user.update(organization_user_params)
+  end
+
+  def destroy
+    @organization_user.destroy!
+    head :no_content
+  end
+
+  private
+
+  def organization_user_params
+    params.require(:organization_user).permit(:role)
+  end
+
+  def dont_allow_self_edit
+    user_id = params[:user_id].to_i
+    user_email = params[:email]
+    is_editing_self = current_user.id == user_id || current_user.email == user_email
+    render json: { message: 'Cant modify your own role' }, status: :forbidden if is_editing_self
   end
 end
