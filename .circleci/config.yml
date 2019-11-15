@@ -17,7 +17,7 @@ commands:
           keys:
             - *ruby-cache-key
             - ruby-v2-
-      - run: bundle check --path ../vendor/bundle &> /dev/null
+      - run: bundle check --path ../vendor/bundle || echo "Missing gems"
 
 jobs:
   bootstrap:
