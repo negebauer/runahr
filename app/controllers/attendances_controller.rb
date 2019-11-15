@@ -19,6 +19,10 @@ class AttendancesController < ApplicationController
   end
 
   def create
+    unless @attendance.check_out_at.present?
+      return render json: { message: 'check_out_at is required when creating an attendace' }, status: :unprocessable_entity
+    end
+
     @attendance.save!
     render status: :created
   end
