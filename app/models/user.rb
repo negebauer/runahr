@@ -15,8 +15,8 @@
 # User
 class User < ApplicationRecord
   has_secure_password
-  has_many :attendances
-  has_many :organization_users
+  has_many :attendances, dependent: :destroy
+  has_many :organization_users, dependent: :destroy
   has_many :organizations, through: :organization_users
 
   validates :name, presence: true
