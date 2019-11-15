@@ -4,9 +4,12 @@
 class AttendancesController < ApplicationController
   before_action :authenticate_user
   before_action :set_current_user_as_user, only: %i[check_in check_out]
+  before_action :load_user_from_params, only: %i[user_attendances user_check_in user_check_out]
 
   load_and_authorize_resource :organization, id_param: 'organization_id'
-  load_and_authorize_resource :attendance, trough: :organization, except: %i[check_in check_out]
+  load_and_authorize_resource :attendance,
+                              trough: :organization,
+                              only: %i[index show create update destroy]
 
   before_action :load_attendance_user, only: %i[create update]
 
@@ -37,14 +40,30 @@ class AttendancesController < ApplicationController
     perform_check_out
   end
 
+  def user_attendances
+    @attendances = @user.attendances.where(organization_id: @organization.id)
+  end
+
+  def user_check_in
+    perform_check_in
+  end
+
+  def user_check_out
+    perform_check_out
+  end
+
   private
+
+  def attendance_params
+    params.require(:attendance).permit(:check_in_at, :check_out_at, :user_id)
+  end
 
   def load_attendance_user
     @user = @attendance.user
   end
 
-  def attendance_params
-    params.require(:attendance).permit(:check_in_at, :check_out_at, :user_id)
+  def load_user_from_params
+    @user = User.find(params[:user_id])
   end
 
   def perform_check_in
