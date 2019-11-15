@@ -10,6 +10,7 @@ class UsersController < ApplicationController
   def create
     @user.email&.downcase!
     @user.save!
+    render status: :created
   end
 
   private
