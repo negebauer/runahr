@@ -11,7 +11,7 @@ class OrganizationUsersController < ApplicationController
                               trough: :organization,
                               only: %i[index show update destroy]
 
-  before_action :dont_allow_self_edit, only: %i[create update destroy]
+  before_action :dont_allow_self_edit, only: %i[update destroy]
 
   def index
     user_ids = @organization_users.pluck(:user_id).uniq
@@ -19,15 +19,17 @@ class OrganizationUsersController < ApplicationController
   end
 
   def create
-    user_id = params[:user_id].to_i
-    return render json: { message: 'Cant change your own role' }, status: :forbidden if current_user.id == user_id
+    email = organization_user_create_params[:email]
+    return render json: { message: 'You must provide either a email' }, status: :bad_request unless email
 
-    @organization_user = @organization.add_user(user_id, params[:role])
+    @user = User.find_by(email: email) || User.create(organization_user_create_params.permit!.except(:role))
+    @organization_user = @organization.add_user(@user.id, organization_user_create_params[:role])
     @organization_user.save!
+    render status: :created
   end
 
   def update
-    @organization_user.update(organization_user_params)
+    @organization_user.update(params.require(:organization_user).permit(:role))
   end
 
   def destroy
@@ -37,14 +39,14 @@ class OrganizationUsersController < ApplicationController
 
   private
 
-  def organization_user_params
-    params.require(:organization_user).permit(:role)
+  def organization_user_create_params
+    params.require(:organization_user).permit!
   end
 
   def dont_allow_self_edit
     user_id = params[:user_id].to_i
-    user_email = params[:email]
-    is_editing_self = current_user.id == user_id || current_user.email == user_email
+    email = params[:email]
+    is_editing_self = current_user.id == user_id || current_user.email == email
     render json: { message: 'Cant modify your own role' }, status: :forbidden if is_editing_self
   end
 end
