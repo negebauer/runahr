@@ -12,6 +12,8 @@
 #  updated_at      :datetime         not null
 #
 
+EMAIL_REGEX = /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i.freeze
+
 # User
 class User < ApplicationRecord
   has_secure_password
@@ -20,8 +22,16 @@ class User < ApplicationRecord
   has_many :organizations, through: :organization_users
 
   validates :name, presence: true
-  validates :email, presence: true, uniqueness: true
+  validates :email, presence: true,
+                    uniqueness: { allow_blank: true, case_sensitive: false },
+                    format: { allow_blank: true, with: EMAIL_REGEX }
   validates :password_digest, presence: true
+
+  before_save :downcase_email
+
+  def downcase_email
+    self.email = email.downcase
+  end
 
   def organization_user(organization_id)
     organization_users.find_by(organization_id: organization_id)
