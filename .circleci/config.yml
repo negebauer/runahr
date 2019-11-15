@@ -38,6 +38,13 @@ jobs:
       - ruby_bootstrap
       - run: bundle exec rubocop
 
+  annotate:
+    description: Check if annotations are updated
+    executor: ruby_executor
+    steps:
+      - ruby_bootstrap
+      - run: bundle exec annotate --models
+
   test:
     description: Run tests
     docker:
@@ -54,6 +61,9 @@ workflows:
     jobs:
       - bootstrap
       - lint:
+          requires:
+            - bootstrap
+      - annotate:
           requires:
             - bootstrap
       - test:
