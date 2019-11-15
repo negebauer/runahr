@@ -20,8 +20,8 @@ class Ability
     return unless organization_user.admin? || organization_user.employee?
 
     # Organization employee permissions
-    can :me, Attendance, user_id: user.id
-    can %i[check_in check_out], Organization, id: organization.id
+    can :me, Attendance
+    can %i[check_in check_out], Attendance, organization_id: organization.id
 
     return unless organization_user.admin?
 

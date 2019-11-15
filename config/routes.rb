@@ -7,13 +7,13 @@ Rails.application.routes.draw do
   resources :organizations, only: %i[index show create update] do
     resources :organization_users, path: 'users'
 
+    get 'attendances/me'
+    post 'attendances/check_in'
+    post 'attendances/check_out'
+
     resources :attendances
 
-    get 'attendances/me' => 'attendances#me'
-    post 'attendances/check_in' => 'attendances#check_in'
-    post 'attendances/check_out' => 'attendances#check_out'
-
-    get 'attendances/:user_id' => 'attendances#user_attendances'
+    get 'attendances/:user_id/' => 'attendances#user_attendances'
     post 'attendances/:user_id/check_in' => 'attendances#user_check_in'
     post 'attendances/:user_id/check_out' => 'attendances#user_check_out'
   end

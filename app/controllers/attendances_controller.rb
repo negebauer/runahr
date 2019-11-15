@@ -32,6 +32,10 @@ class AttendancesController < ApplicationController
     head :no_content
   end
 
+  def me
+    @attendances = @organization.attendances.where(user_id: current_user.id)
+  end
+
   def check_in
     perform_check_in
   end
