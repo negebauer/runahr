@@ -7,6 +7,10 @@ executors:
   ruby_executor:
     docker:
       - image: *ruby-docker-image
+  ruby_postgres_executor:
+    docker:
+      - image: *ruby-docker-image
+      - image: circleci/postgres:9.5-alpine
 
 commands:
   ruby_bootstrap:
@@ -40,16 +44,15 @@ jobs:
 
   annotate:
     description: Check if annotations are updated
-    executor: ruby_executor
+    executor: ruby_postgres_executor
     steps:
       - ruby_bootstrap
       - run: bundle exec annotate --models
+      - run: test "$(git diff --stat)" != '' && echo "Repo dirty, you need to run annotate" && exit 1
 
   test:
     description: Run tests
-    docker:
-      - image: *ruby-docker-image
-      - image: circleci/postgres:9.5-alpine
+    executor: ruby_postgres_executor
     steps:
       - ruby_bootstrap
       - run: bundle exec rake db:create
