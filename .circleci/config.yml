@@ -7,8 +7,6 @@ executors:
   ruby_executor:
     docker:
       - image: *ruby-docker-image
-        environment:
-          BUNDLER_VERSION: 2.0.2
 
 commands:
   ruby_bootstrap:
