@@ -45,7 +45,7 @@ class User < ApplicationRecord
     attendances.where(organization_id: organization_id).order(check_in_at: :asc).last
   end
 
-  def check_in(organization_id)
+  def check_in!(organization_id)
     attendance = last_attendance(organization_id)
     raise Exceptions::UserHasPendingCheckOut, attendance if attendance && !attendance.check_out_at?
 
@@ -54,7 +54,7 @@ class User < ApplicationRecord
     attendance
   end
 
-  def check_out(organization_id)
+  def check_out!(organization_id)
     attendance = last_attendance(organization_id)
     raise Exceptions::UserHasNoCheckInToCheckOut if !attendance || attendance.check_out_at?
 

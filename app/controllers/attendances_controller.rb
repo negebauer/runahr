@@ -71,7 +71,7 @@ class AttendancesController < ApplicationController
   end
 
   def perform_check_in
-    @attendance = @user.check_in(@organization.id)
+    @attendance = @user.check_in!(@organization.id)
   rescue Exceptions::UserHasPendingCheckOut => e
     render json: {
       message: 'User has a pending check out',
@@ -80,7 +80,7 @@ class AttendancesController < ApplicationController
   end
 
   def perform_check_out
-    @attendance = @user.check_out(@organization.id)
+    @attendance = @user.check_out!(@organization.id)
   rescue Exceptions::UserHasNoCheckInToCheckOut
     render json: { message: 'User does not have a check in with a pending check out' }, status: :unprocessable_entity
   end
