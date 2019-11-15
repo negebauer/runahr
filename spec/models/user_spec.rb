@@ -74,5 +74,34 @@ RSpec.describe User, type: :model do
         end
       end
     end
+
+    describe '#check_out!' do
+      %i[employee admin].each do |role|
+        context "when the user has role #{role}" do
+          subject { create(role) }
+          let(:organization) { subject.organizations.first }
+
+          context 'when the user has no pending check out' do
+            let(:attendance) { subject.check_out!(organization.id) }
+
+            it 'throws a UserHasNoCheckInToCheckOut error' do
+              expect { attendance }.to raise_error(Exceptions::UserHasNoCheckInToCheckOut)
+            end
+          end
+
+          context 'when the user has a pending check out' do
+            let(:attendance) do
+              subject.check_in!(organization.id)
+              subject.check_out!(organization.id)
+            end
+
+            it 'returns an attendance with check_in_at and check_out_at' do
+              expect(attendance.check_in_at).not_to be_nil
+              expect(attendance.check_out_at).not_to be_nil
+            end
+          end
+        end
+      end
+    end
   end
 end
