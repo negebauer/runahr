@@ -7,6 +7,8 @@ FactoryBot.define do
     transient do
       admin_count { 0 }
       employee_count { 0 }
+      user { nil }
+      role { nil }
     end
 
     after(:create) do |organization, options|
@@ -16,6 +18,10 @@ FactoryBot.define do
 
       options.employee_count&.times do
         create(:employee, organization: organization)
+      end
+
+      if options.user&.id && options.role
+        create(:organization_user, organization_id: organization.id, user_id: options.user.id, role: options.role)
       end
     end
   end
