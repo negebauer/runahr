@@ -28,5 +28,6 @@ class Ability
     # Organization admin permissions
     can :manage, Attendance, organization_id: organization.id
     can :manage, Organization, id: organization.id
+    can :manage, OrganizationUser, organization_id: organization.id
   end
 end

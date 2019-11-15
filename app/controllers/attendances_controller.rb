@@ -45,7 +45,7 @@ class AttendancesController < ApplicationController
   end
 
   def user_attendances
-    @attendances = @organization.attendances.where(user_id: params[:organization_user_id])
+    @attendances = @organization.attendances.where(user_id: params[:user_id])
   end
 
   def user_check_in
@@ -67,7 +67,7 @@ class AttendancesController < ApplicationController
   end
 
   def load_user_from_params
-    @user = User.find(params[:organization_user_id])
+    @user = User.find(params[:user_id])
   end
 
   def perform_check_in
