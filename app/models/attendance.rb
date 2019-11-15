@@ -1,5 +1,18 @@
 # frozen_string_literal: true
 
+# == Schema Information
+#
+# Table name: attendances
+#
+#  id              :bigint           not null, primary key
+#  user_id         :bigint
+#  organization_id :bigint
+#  check_in_at     :datetime
+#  check_out_at    :datetime
+#  created_at      :datetime         not null
+#  updated_at      :datetime         not null
+#
+
 # Attendance
 class Attendance < ApplicationRecord
   belongs_to :user
