@@ -38,13 +38,15 @@ jobs:
       - ruby_bootstrap
       - run: bundle exec rubocop
 
-  # test:
-  #   description: Run tests
-  #   executor: ruby_executor
-  #   steps:
-  #     - ruby_bootstrap
-  #     - run: bundle exec rake db:create
-  #     - run: bundle exec rake test
+  test:
+    description: Run tests
+    docker:
+      - image: *ruby-docker-image
+      - image: circleci/postgres:9.5-alpine
+    steps:
+      - ruby_bootstrap
+      - run: bundle exec rake db:create
+      - run: bundle exec rake test
 
 workflows:
   version: 2
@@ -54,6 +56,6 @@ workflows:
       - lint:
           requires:
             - bootstrap
-      # - test:
-      #     requires:
-      #       - bootstrap
+      - test:
+          requires:
+            - bootstrap
