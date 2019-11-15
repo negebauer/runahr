@@ -5,10 +5,12 @@ Rails.application.routes.draw do
   root to: 'application#root'
 
   resources :organizations, only: %i[index show create update] do
-    resources :organization_users, path: 'users' do
-      get 'attendances' => 'attendances#user_attendances'
-      post 'attendances/check_in' => 'attendances#user_check_in'
-      post 'attendances/check_out' => 'attendances#user_check_out'
+    resources :organization_users, path: 'users', param: 'user_id' do
+      member do
+        get 'attendances' => 'attendances#user_attendances'
+        post 'attendances/check_in' => 'attendances#user_check_in'
+        post 'attendances/check_out' => 'attendances#user_check_out'
+      end
     end
 
     get 'attendances/me'
