@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Knock.setup do |config|
+  config.token_secret_signature_key = -> { Rails.application.secret_key_base }
+
   ## Expiration claim
   ## ----------------
   ##
