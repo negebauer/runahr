@@ -18,12 +18,18 @@ class OrganizationUsersController < ApplicationController
     @users = User.where(id: user_ids).select(:id, :name).index_by(&:id)
   end
 
-  def create
+  def create # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
     email = organization_user_params[:email]
     return render json: { message: 'You must provide either a email' }, status: :bad_request unless email
 
     @user = User.find_by(email: email) || User.create(organization_user_params.permit!.except(:role))
-    @organization_user = @organization.add_user(@user.id, organization_user_params[:role])
+    @organization_user = @organization.organization_users.find_by(user_id: @user.id)
+    if @organization_user
+      @message = 'The organization user already exists'
+      return render status: :unprocessable_entity
+    end
+
+    @organization_user = @organization.organization_users.new(user_id: @user.id, role: organization_user_params[:role])
     @organization_user.save!
     render status: :created
   end
