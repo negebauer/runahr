@@ -52,8 +52,7 @@ jobs:
     executor: ruby_postgres_executor
     steps:
       - ruby_postgres_bootstrap
-      - run: bundle exec annotate --models
-      - run: test "$(git diff --stat)" != '' && (echo "Repo dirty, you need to run annotate"; exit 1)
+      - run: bundle exec annotate --models --frozen
 
   test:
     description: Run tests
