@@ -1,4 +1,4 @@
-ruby-cache-key: &ruby-cache-key ruby-v2-{{ checksum "Gemfile.lock" }}
+ruby-cache-key: &ruby-cache-key ruby-v3-{{ checksum "Gemfile.lock" }}
 ruby-docker-image: &ruby-docker-image negebauer/circleci-ruby
 
 version: 2.1
@@ -16,7 +16,7 @@ commands:
       - restore_cache:
           keys:
             - *ruby-cache-key
-            - ruby-v2-
+            - ruby-v3-
       - run: bundle check --path ../vendor/bundle || echo "Missing gems"
 
 jobs:
@@ -25,11 +25,11 @@ jobs:
     executor: ruby_executor
     steps:
       - ruby_bootstrap
-      - run: bundle install --deployment
+      - run: bundle install
       - save_cache:
           key: *ruby-cache-key
           paths:
-            - vendor/bundle
+            - ../vendor/bundle
 
   lint:
     description: Run the linter
