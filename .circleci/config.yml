@@ -17,6 +17,7 @@ commands:
           keys:
             - *ruby-cache-key
             - ruby-v1-
+      - run: bundle check --path ../vendor/bundle
 
 jobs:
   bootstrap:
@@ -24,7 +25,7 @@ jobs:
     executor: ruby_executor
     steps:
       - ruby_bootstrap
-      - run: bundle check --path vendor/bundle || bundle install --deployment
+      - run: bundle install --deployment
       - save_cache:
           key: *ruby-cache-key
           paths:
