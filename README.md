@@ -1,24 +1,20 @@
-# README
+# Runa HR Attendance API
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Check the [documentation](https://documenter.getpostman.com/view/1018411/SW7T7Wzc)
 
-Things you may want to cover:
+## Development
 
-* Ruby version
+- Clone and cd to this repository
+- Run `bundle install`
+- Create a credential for running locally `bundle exec rake secret > config/master.key`
+- Run postgress in default port
+- Run `bundle exec rake db:create db:migrate`
+- Run `bundle exec rails s`
 
-* System dependencies
+### Lint
 
-* Configuration
+Run `bundle exec rubocop`
 
-* Database creation
+### Test
 
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+Run `bundle exec rake test`
