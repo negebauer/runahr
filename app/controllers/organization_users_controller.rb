@@ -5,16 +5,15 @@ class OrganizationUsersController < ApplicationController
   before_action :authenticate_user
 
   load_and_authorize_resource :organization, id_param: 'organization_id'
-  load_and_authorize_resource :organization_user,
-                              find_by: :user_id,
-                              id_param: 'user_id',
-                              trough: :organization,
-                              only: %i[index show update destroy]
+  before_action :load_organization_user, only: %i[show update destroy]
+  authorize_resource :organization_user,
+                     only: %i[show update destroy]
 
-  before_action :dont_allow_self_edit, only: %i[create update]
-  before_action :dont_allow_self_destroy, only: %i[destroy]
+  before_action :dont_allow_self_create, only: %i[create]
+  before_action :dont_allow_self_update_or_destroy, only: %i[update destroy]
 
   def index
+    @organization_users = @organization.organization_users.accessible_by(current_ability)
     user_ids = @organization_users.pluck(:user_id).uniq
     @users = User.where(id: user_ids).select(:id, :name).index_by(&:id)
   end
@@ -44,14 +43,18 @@ class OrganizationUsersController < ApplicationController
     params.require(:organization_user).permit!
   end
 
-  def dont_allow_self_edit
+  def load_organization_user
+    @organization_user = @organization.organization_users.find_by(user_id: params[:user_id])
+  end
+
+  def dont_allow_self_create
     user_id = organization_user_params[:user_id].to_i
     email = organization_user_params[:user_email]
     is_editing_self = current_user.id == user_id || current_user.email == email
     render json: { message: 'Cant modify your own role' }, status: :forbidden if is_editing_self
   end
 
-  def dont_allow_self_destroy
+  def dont_allow_self_update_or_destroy
     user_id = params[:user_id].to_i
     render json: { message: 'Cant modify your own role' }, status: :forbidden if current_user.id == user_id
   end
