@@ -8,8 +8,8 @@ class OrganizationsController < ApplicationController
   load_and_authorize_resource only: %i[users add_user index show create update]
 
   def create
-    @organization.organization_users.build(user: current_user, role: :admin)
     @organization.save!
+    @organization.organization_users.create!(user: current_user, role: :admin)
     render status: :created
   end
 
