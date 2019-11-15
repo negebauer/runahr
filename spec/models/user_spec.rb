@@ -78,8 +78,8 @@ RSpec.describe User, type: :model do
     describe '#check_out!' do
       %i[employee admin].each do |role|
         context "when the user has role #{role}" do
-          subject { create(role) }
-          let(:organization) { subject.organizations.first }
+          let(:organization) { create(:organization) }
+          subject { create(role, organization: organization) }
 
           context 'when the user has no pending check out' do
             let(:attendance) { subject.check_out!(organization.id) }
