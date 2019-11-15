@@ -22,6 +22,11 @@ commands:
             - *ruby-cache-key
             - ruby-v3-
       - run: bundle check --path ../vendor/bundle || echo "Missing gems"
+  ruby_postgres_bootstrap:
+    description: Bootstrap ruby and create postgres database
+    steps:
+      - ruby_bootstrap
+      - run: bundle exec rake db:create
 
 jobs:
   bootstrap:
@@ -46,16 +51,15 @@ jobs:
     description: Check if annotations are updated
     executor: ruby_postgres_executor
     steps:
-      - ruby_bootstrap
+      - ruby_postgres_bootstrap
       - run: bundle exec annotate --models
-      - run: test "$(git diff --stat)" != '' && echo "Repo dirty, you need to run annotate" && exit 1
+      - run: test "$(git diff --stat)" != '' && (echo "Repo dirty, you need to run annotate"; exit 1)
 
   test:
     description: Run tests
     executor: ruby_postgres_executor
     steps:
-      - ruby_bootstrap
-      - run: bundle exec rake db:create
+      - ruby_postgres_bootstrap
       - run:
           name: Run rspec in parallel
           command: |
