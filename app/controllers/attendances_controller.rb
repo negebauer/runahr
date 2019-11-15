@@ -4,7 +4,7 @@
 class AttendancesController < ApplicationController
   before_action :authenticate_user
   before_action :set_current_user_as_user, only: %i[check_in check_out]
-  before_action :load_user_from_params, only: %i[user_attendances user_check_in user_check_out]
+  before_action :load_user_from_params, only: %i[user_check_in user_check_out]
 
   load_and_authorize_resource :organization, id_param: 'organization_id'
   load_and_authorize_resource :attendance,
@@ -45,7 +45,7 @@ class AttendancesController < ApplicationController
   end
 
   def user_attendances
-    @attendances = @user.attendances.where(organization_id: @organization.id)
+    @attendances = @organization.attendances.where(user_id: params[:organization_user_id])
   end
 
   def user_check_in
@@ -67,7 +67,7 @@ class AttendancesController < ApplicationController
   end
 
   def load_user_from_params
-    @user = User.find(params[:user_id])
+    @user = User.find(params[:organization_user_id])
   end
 
   def perform_check_in

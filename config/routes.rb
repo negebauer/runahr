@@ -5,17 +5,17 @@ Rails.application.routes.draw do
   root to: 'application#root'
 
   resources :organizations, only: %i[index show create update] do
-    resources :organization_users, path: 'users'
+    resources :organization_users, path: 'users' do
+      get 'attendances' => 'attendances#user_attendances'
+      post 'attendances/check_in' => 'attendances#user_check_in'
+      post 'attendances/check_out' => 'attendances#user_check_out'
+    end
 
     get 'attendances/me'
     post 'attendances/check_in'
     post 'attendances/check_out'
 
     resources :attendances
-
-    get 'attendances/:user_id/' => 'attendances#user_attendances'
-    post 'attendances/:user_id/check_in' => 'attendances#user_check_in'
-    post 'attendances/:user_id/check_out' => 'attendances#user_check_out'
   end
 
   get 'users/me' => 'users#me'
