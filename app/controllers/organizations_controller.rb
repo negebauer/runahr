@@ -14,7 +14,7 @@ class OrganizationsController < ApplicationController
   end
 
   def update
-    @organization.update(organization_params)
+    @organization.update!(organization_params)
   end
 
   def users

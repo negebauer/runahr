@@ -30,7 +30,7 @@ class OrganizationUsersController < ApplicationController
   end
 
   def update
-    @organization_user.update(params.require(:organization_user).permit(:role))
+    @organization_user.update!(params.require(:organization_user).permit(:role))
   end
 
   def destroy

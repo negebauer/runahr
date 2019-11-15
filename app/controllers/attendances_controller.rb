@@ -24,7 +24,7 @@ class AttendancesController < ApplicationController
   end
 
   def update
-    @attendance.update(attendance_params)
+    @attendance.update!(attendance_params)
   end
 
   def destroy
