@@ -1,6 +1,7 @@
 # Runa HR Attendance API
 
 Check the [documentation](https://documenter.getpostman.com/view/1018411/SW7T7Wzc)
+View the [api live](https://runahr-attendance.herokuapp.com/)
 
 ## Environment
 
