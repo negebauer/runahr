@@ -19,6 +19,10 @@ class AttendancesController < ApplicationController
   end
 
   def create
+    unless @attendance.check_out_at
+      return render json: { message: 'When posting an attendance check_out_at is required' }, status: :unprocessable_entity
+    end
+
     @attendance.save!
     render status: :created
   end
@@ -45,14 +49,17 @@ class AttendancesController < ApplicationController
   end
 
   def user_attendances
+    authorize! :manage, @organization
     @attendances = @organization.attendances.where(user_id: params[:user_id])
   end
 
   def user_check_in
+    authorize! :manage, @organization
     perform_check_in
   end
 
   def user_check_out
+    authorize! :manage, @organization
     perform_check_out
   end
 
