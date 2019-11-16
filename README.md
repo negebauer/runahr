@@ -1,24 +1,28 @@
-# README
+# Runa HR Attendance API
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Check the [documentation](https://documenter.getpostman.com/view/1018411/SW7T7Wzc)
 
-Things you may want to cover:
+## Environment
 
-* Ruby version
+- Ruby 2.5.1
+- Rails 5.2.3
+- PostgreSQL 12
+- [Circle CI](https://circleci.com/gh/negebauer/runahr)
+- [Heroku](https://runahr-attendance.herokuapp.com)
 
-* System dependencies
+## Development
 
-* Configuration
+- Clone and cd to this repository
+- Run `bundle install`
+- Create a credential for running locally `bundle exec rake secret > config/master.key`
+- Run postgress in default port
+- Run `bundle exec rake db:create db:migrate`
+- Run `bundle exec rails s`
 
-* Database creation
+### Lint
 
-* Database initialization
+Run `bundle exec rubocop`
 
-* How to run the test suite
+### Test
 
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+Run `bundle exec rake test`

@@ -19,8 +19,8 @@ class AttendancesController < ApplicationController
   end
 
   def create
-    unless @attendance.check_out_at.present?
-      return render json: { message: 'check_out_at is required when creating an attendace' }, status: :unprocessable_entity
+    unless @attendance.check_out_at
+      return render json: { message: 'When posting an attendance check_out_at is required' }, status: :unprocessable_entity
     end
 
     @attendance.save!
@@ -49,14 +49,17 @@ class AttendancesController < ApplicationController
   end
 
   def user_attendances
+    authorize! :manage, @organization
     @attendances = @organization.attendances.where(user_id: params[:user_id])
   end
 
   def user_check_in
+    authorize! :manage, @organization
     perform_check_in
   end
 
   def user_check_out
+    authorize! :manage, @organization
     perform_check_out
   end
 
@@ -75,7 +78,7 @@ class AttendancesController < ApplicationController
   end
 
   def perform_check_in
-    @attendance = @user.check_in(@organization.id)
+    @attendance = @user.check_in!(@organization.id)
   rescue Exceptions::UserHasPendingCheckOut => e
     render json: {
       message: 'User has a pending check out',
@@ -84,7 +87,7 @@ class AttendancesController < ApplicationController
   end
 
   def perform_check_out
-    @attendance = @user.check_out(@organization.id)
+    @attendance = @user.check_out!(@organization.id)
   rescue Exceptions::UserHasNoCheckInToCheckOut
     render json: { message: 'User does not have a check in with a pending check out' }, status: :unprocessable_entity
   end

@@ -7,6 +7,10 @@ executors:
   ruby_executor:
     docker:
       - image: *ruby-docker-image
+  ruby_postgres_executor:
+    docker:
+      - image: *ruby-docker-image
+      - image: circleci/postgres:9.5-alpine
 
 commands:
   ruby_bootstrap:
@@ -18,6 +22,11 @@ commands:
             - *ruby-cache-key
             - ruby-v3-
       - run: bundle check --path ../vendor/bundle || echo "Missing gems"
+  ruby_postgres_bootstrap:
+    description: Bootstrap ruby and create postgres database
+    steps:
+      - ruby_bootstrap
+      - run: bundle exec rake db:create
 
 jobs:
   bootstrap:
@@ -38,13 +47,28 @@ jobs:
       - ruby_bootstrap
       - run: bundle exec rubocop
 
-  # test:
-  #   description: Run tests
-  #   executor: ruby_executor
-  #   steps:
-  #     - ruby_bootstrap
-  #     - run: bundle exec rake db:create
-  #     - run: bundle exec rake test
+  annotate:
+    description: Check if annotations are updated
+    executor: ruby_postgres_executor
+    steps:
+      - ruby_postgres_bootstrap
+      - run: bundle exec annotate --models --frozen
+
+  test:
+    description: Run tests
+    executor: ruby_postgres_executor
+    steps:
+      - ruby_postgres_bootstrap
+      - run:
+          name: Run rspec in parallel
+          command: |
+            bundle exec rspec --profile 10 \
+                              --format RspecJunitFormatter \
+                              --out test_results/rspec.xml \
+                              --format progress \
+                              $(circleci tests glob "spec/**/*_spec.rb" | circleci tests split --split-by=timings)
+      - store_test_results:
+          path: test_results
 
 workflows:
   version: 2
@@ -54,6 +78,9 @@ workflows:
       - lint:
           requires:
             - bootstrap
-      # - test:
-      #     requires:
-      #       - bootstrap
+      - annotate:
+          requires:
+            - bootstrap
+      - test:
+          requires:
+            - bootstrap
