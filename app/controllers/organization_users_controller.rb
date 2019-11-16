@@ -14,6 +14,7 @@ class OrganizationUsersController < ApplicationController
 
   def index
     @organization_users = @organization.organization_users.accessible_by(current_ability)
+    authorize! :read, @organization_users
     user_ids = @organization_users.pluck(:user_id).uniq
     @users = User.where(id: user_ids).select(:id, :name).index_by(&:id)
   end
