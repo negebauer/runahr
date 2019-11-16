@@ -13,13 +13,14 @@ class OrganizationUsersController < ApplicationController
   before_action :dont_allow_self_update_or_destroy, only: %i[update destroy]
 
   def index
-    authorize! :manager, @organization
+    authorize! :manage, @organization
     @organization_users = @organization.organization_users
     user_ids = @organization_users.pluck(:user_id).uniq
     @users = User.where(id: user_ids).select(:id, :name).index_by(&:id)
   end
 
   def create # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
+    authorize! :manage, @organization
     email = organization_user_params[:email]
     return render json: { message: 'You must provide either a email' }, status: :bad_request unless email
 

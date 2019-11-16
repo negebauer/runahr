@@ -3,7 +3,7 @@
 require_relative 'auth'
 
 def request(headers = {})
-  options = { headers: headers, params: body, as: :json }
+  options = { headers: headers, as: :json, params: body }
 
   return get url, options if method == :get
   return post url, options if method == :post

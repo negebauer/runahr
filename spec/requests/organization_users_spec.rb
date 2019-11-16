@@ -33,7 +33,45 @@ RSpec.describe 'OrganizationUsers requests' do
   end
 
   describe 'POST /organizations/:organization_id/users' do
-    # TODO: More complex one
+    let(:method) { :post }
+    let(:url) { "/organizations/#{organization.id}/users" }
+    let(:body) { { organization_user: { email: '' } } }
+
+    before { post url, headers: auth_header(user), as: :json, params: body }
+
+    it_behaves_like 'an authenticated request'
+
+    context 'when the user is an authenticated employee' do
+      let(:user) { create(:employee, organization: organization) }
+      it_behaves_like 'a forbidden request'
+    end
+
+    context 'when the user is an authenticated admin' do
+      context 'when the user to be added already exists' do
+        let(:another_user) { create(:user) }
+        let(:body) { { organization_user: { email: another_user.email, role: :employee } } }
+
+        it 'creates the organization user' do
+          expect(json['user']).to include(another_user.attributes.slice(%i[email name]))
+          expect(json['organization_user']['role']).to eql(body[:organization_user][:role].to_s)
+        end
+      end
+
+      context 'when the user to be added does not exist' do
+        context 'when the body is incomplete for creating a new user' do
+          it_behaves_like 'an unprocessable_entity request'
+        end
+
+        context 'when the body is complete for creating a new user' do
+          let(:body) { { organization_user: { email: 'email@email.org', role: :employee, name: 'name', password: 'password' } } }
+
+          it 'creates the user and organization user' do
+            expect(json['user']).to include(body[:organization_user].slice(%i[email name]))
+            expect(json['organization_user']['role']).to eql(body[:organization_user][:role].to_s)
+          end
+        end
+      end
+    end
   end
 
   describe 'PATCH /organizations/:organization_id/users/:user_id' do
