@@ -7,8 +7,8 @@ Check the [documentation](https://documenter.getpostman.com/view/1018411/SW7T7Wz
 - Ruby 2.5.1
 - Rails 5.2.3
 - PostgreSQL 12
-- Circle CI
-- Heroku
+- [Circle CI](https://circleci.com/gh/negebauer/runahr)
+- [Heroku](https://runahr-attendance.herokuapp.com)
 
 ## Development
 
