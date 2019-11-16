@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative '../support/shared_examples.rb'
-
 RSpec.describe 'Organizations requests' do
   let(:user) { create(:user) }
 

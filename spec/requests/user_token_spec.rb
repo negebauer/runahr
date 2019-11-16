@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative '../support/shared_examples.rb'
-
 RSpec.describe 'UserToken requests' do
   describe 'POST /login' do
     let(:method) { :post }

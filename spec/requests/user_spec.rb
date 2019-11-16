@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative '../support/shared_examples.rb'
-
 RSpec.describe 'Users requests' do
   describe 'GET /users/me' do
     let(:method) { :get }

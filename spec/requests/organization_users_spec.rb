@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative '../support/shared_examples.rb'
-
 RSpec.describe 'OrganizationUsers requests' do
   let(:admin) { create(:admin) }
   let(:user) { admin }
