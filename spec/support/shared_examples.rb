@@ -4,11 +4,10 @@ require_relative 'auth'
 
 def request(headers = {})
   options = { headers: headers, params: body, as: :json }
-  # options[:headers]['Content-Type'] = 'application/json'
 
   return get url, options if method == :get
   return post url, options if method == :post
-  return put url, options if method == :put
+  return patch url, options if method == :patch
 
   delete url, options
 end
@@ -24,14 +23,14 @@ end
 
 shared_examples_for 'a forbidden request' do
   it 'responds with forbidden status' do
-    request(authenticated_header(requester))
+    request(auth_header(user))
     expect(response).to have_http_status(:forbidden)
   end
 end
 
 shared_examples_for 'an unprocessable_entity request' do
   it 'responds with unprocessable_entity status' do
-    request(authenticated_header(requester))
+    request(auth_header(user))
     expect(response).to have_http_status(:unprocessable_entity)
   end
 end
