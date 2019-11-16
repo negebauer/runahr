@@ -12,7 +12,7 @@ FactoryBot.define do
 
     factory :employee do
       after(:create) do |user, options|
-        organization = options[:organization]
+        organization = options&.organization
         organization ||= create(:organization)
         create(:organization_user, user_id: user.id, organization_id: organization.id, role: :employee)
       end
@@ -20,7 +20,7 @@ FactoryBot.define do
 
     factory :admin do
       after(:create) do |user, options|
-        organization = options[:organization]
+        organization = options&.organization
         organization ||= create(:organization)
         create(:organization_user, user_id: user.id, organization_id: organization.id, role: :admin)
       end
