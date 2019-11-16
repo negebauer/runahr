@@ -13,8 +13,8 @@ class OrganizationUsersController < ApplicationController
   before_action :dont_allow_self_update_or_destroy, only: %i[update destroy]
 
   def index
-    @organization_users = @organization.organization_users.accessible_by(current_ability)
-    authorize! :read, @organization_users
+    authorize! :manager, @organization
+    @organization_users = @organization.organization_users
     user_ids = @organization_users.pluck(:user_id).uniq
     @users = User.where(id: user_ids).select(:id, :name).index_by(&:id)
   end
